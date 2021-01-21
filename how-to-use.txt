@@ -1,0 +1,4 @@
+1.) Clone the repo.
+2.) Run 'yarn' on client and server dir.
+3.) Run 'npm dev' on server.
+4.) Run 'npm start' on client.

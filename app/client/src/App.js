@@ -1,7 +1,8 @@
 import React from "react";
+import { makeStyles, CssBaseline, createMuiTheme, ThemeProvider } from "@material-ui/core";
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
-import { makeStyles, CssBaseline, createMuiTheme, ThemeProvider } from "@material-ui/core";
+import Main from "./containers/Main";
 
 const theme = createMuiTheme({
   palette: {
@@ -34,6 +35,7 @@ function App() {
       <SideBar />
       <div className={classes.appMain}>
         <Header />
+        <Main />
       </div>
       <CssBaseline />
       {/* <Sample/> */}

@@ -33,7 +33,7 @@ function SideMenu(props) {
           component="div"
           style={{ color: "#fff", fontWeight: "lighter" }}
         >
-          Serve you the Best
+          We serve you the best
         </Typography>
       </div>
     </div>

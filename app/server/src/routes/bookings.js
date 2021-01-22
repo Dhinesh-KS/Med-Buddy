@@ -1,10 +1,10 @@
 const express = require("express");
 const router = new express.Router();
-const { Appointments } = require("../models/appointments");
+const { Appointment } = require("../models/appointments");
 
 router.get("/getAppointments", async (req, res) => {
   try {
-    const list = await Appointments.find({});
+    const list = await Appointment.find({});
     res.send(list);
   } catch (e) {
     res.status(500).send();
@@ -12,13 +12,13 @@ router.get("/getAppointments", async (req, res) => {
 });
 
 router.post("/createAppointment", async (req, res) => {
-  const newItem = new Appointments(req.body);
+  const newItem = new Appointment(req.body);
 
   try {
     await newItem.save();
     res.status(201).send(newItem);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send(e && e.message);
   }
 });
 

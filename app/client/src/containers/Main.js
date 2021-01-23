@@ -21,6 +21,7 @@ import { Search } from "@material-ui/icons";
 import moment from "moment";
 import SnackBar from "../components/SnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { httpClient } from "../services/api/Provider";
 
 const headCells = [
   { id: "fullName", label: "Patient Name" },
@@ -41,7 +42,7 @@ export const getSession = () => [
 const records = [
   {
     id: "1",
-    fullName: "Dhinesh KS",
+    name: "Dhinesh KS",
     mobile: 7010114990,
     city: "Thanjavur",
     gender: "male",
@@ -52,7 +53,7 @@ const records = [
   },
   {
     id: "2",
-    fullName: "Bhuvesh KS",
+    name: "Bhuvesh KS",
     mobile: 7010114990,
     city: "Thanjavur",
     gender: "male",
@@ -63,7 +64,7 @@ const records = [
   },
   {
     id: "3",
-    fullName: "Ramesh S",
+    name: "Ramesh S",
     mobile: 7010114990,
     city: "Thanjavur",
     gender: "male",
@@ -110,7 +111,23 @@ function Main(props) {
       return items;
     },
   });
+  const [slots, setSlots] = useState([]);
   const [sessionBasedRecords, setSessionBasedRecords] = useState([]);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   httpClient
+  //     .getSlots()
+  //     .then((res) => {
+  //       setSlots(res.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   useEffect(() => {
     filterBySession();
@@ -209,7 +226,7 @@ function Main(props) {
             {loading === false &&
               recordsAfterPagingAndSorting().map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.fullName}</TableCell>
+                  <TableCell>{item.name}</TableCell>
                   <TableCell>{item.mobile}</TableCell>
                   <TableCell>{item.city}</TableCell>
                   <TableCell>{item.gender}</TableCell>

@@ -9,6 +9,11 @@ const genderItems = [
   { id: "other", title: "Other" },
 ];
 
+const sessionItems = [
+  { id: "morning", title: "Morning" },
+  { id: "evening", title: "Evening" },
+];
+
 const initialFValues = {
   id: 0,
   fullName: "",
@@ -16,7 +21,10 @@ const initialFValues = {
   mobile: "",
   city: "",
   gender: "male",
+  session: "morning",
   appointmentDate: new Date(),
+  startTime: new Date(),
+  endTime: new Date(Date.now() + 30 * 60 * 1000),
 };
 
 export default function AppointmentForm(props) {
@@ -26,7 +34,11 @@ export default function AppointmentForm(props) {
     if ("fullName" in fieldValues)
       temp.fullName = fieldValues.fullName ? "" : "This field is required.";
     if ("email" in fieldValues)
-      temp.email = /$^|.+@.+..+/.test(fieldValues.email) ? "" : "Email is not valid.";
+      temp.email = fieldValues.email
+        ? /$^|.+@.+..+/.test(fieldValues.email)
+          ? ""
+          : "Email is not valid."
+        : "This field is required.";
     if ("mobile" in fieldValues)
       temp.mobile = fieldValues.mobile.length > 9 ? "" : "Minimum 10 numbers required.";
     setErrors({
@@ -95,13 +107,37 @@ export default function AppointmentForm(props) {
             value={values.appointmentDate}
             onChange={handleInputChange}
           />
-
-          <div>
-            <Controls.Button type="submit" text="Submit" />
-            <Controls.Button text="Reset" color="default" onClick={resetForm} />
-          </div>
+          <Controls.RadioGroup
+            name="session"
+            label="Session"
+            value={values.session}
+            onChange={handleInputChange}
+            items={sessionItems}
+          />
+          <Grid container>
+            <Grid item xs={12} md={6}>
+              <Controls.TimePicker
+                name="startTime"
+                label="StartTime"
+                value={values.startTime}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Controls.TimePicker
+                name="endTime"
+                label="EndTime"
+                value={values.endTime}
+                onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
+      <div>
+        <Controls.Button type="submit" text="Submit" />
+        <Controls.Button text="Reset" color="default" onClick={resetForm} />
+      </div>
     </Form>
   );
 }

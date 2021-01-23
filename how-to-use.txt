@@ -2,3 +2,4 @@
 2.) Run 'yarn' on client and server dir.
 3.) Run 'npm run dev' on server.
 4.) Run 'npm start' on client.
+5.) Client Slots list is populated with static values. But API's were integrated for that component.

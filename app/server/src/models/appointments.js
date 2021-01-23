@@ -34,22 +34,30 @@ const appointmentSchema = mongoose.Schema({
     trim: true,
     lowercase: true,
   },
+  session: {
+    type: String,
+    trim: true,
+    lowercase: true,
+  },
   appointmentDate: {
-    type: Date,
+    type: String,
     required: true,
+    trim: true,
     validate(value) {
-      if (value < new Date()) {
+      if (moment(value).format("MM/DD/YYYY") < moment().format("MM/DD/YYYY")) {
         throw new Error("Appointment date is invalid");
       }
     },
   },
   startTime: {
-    type: Date,
+    type: String,
     required: true,
+    trim: true,
   },
   endTime: {
-    type: Date,
+    type: String,
     required: true,
+    trim: true,
   },
 });
 
@@ -62,6 +70,32 @@ appointmentSchema.pre("save", async function (next) {
       return;
     }
     next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+appointmentSchema.pre("save", async function (next) {
+  const appointments = this;
+  try {
+    let beginningTime = moment(appointments.startTime).format("HH");
+
+    if (appointments.session.toLowerCase() === "morning") {
+      if (beginningTime >= 8 && currentHour < 12) {
+        next();
+      } else {
+        next(new Error("Morning slots are only availble between 8AM to 12PM"));
+        return;
+      }
+    }
+    if (appointments.session.toLowerCase() === "evening") {
+      if (beginningTime >= 17 && currentHour < 21) {
+        next();
+      } else {
+        next(new Error("Evening slots are only availble between 5PM to 9PM"));
+        return;
+      }
+    }
   } catch (err) {
     next(err);
   }
@@ -85,8 +119,7 @@ appointmentSchema.pre("save", async function (next) {
 appointmentSchema.pre("save", async function (next) {
   const appointments = this;
   try {
-    const appointmentDate = moment(appointments.appointmentDate).format("YYYY-MM-DD");
-    const doc = await Appointment.find({ appointmentDate })
+    const doc = await Appointment.find({ appointmentDate: appointments.appointmentDate })
       .where("startTime")
       .lt(appointments.endTime)
       .where("endTime")

@@ -8,6 +8,7 @@ import {
   Toolbar,
   InputAdornment,
   FormControl,
+  Grid,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Controls from "../components/controls/index";
@@ -19,6 +20,7 @@ import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import { Search } from "@material-ui/icons";
 import moment from "moment";
 import SnackBar from "../components/SnackBar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const headCells = [
   { id: "fullName", label: "Patient Name" },
@@ -89,10 +91,17 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 200,
   },
+  root: {
+    display: "flex",
+    "& > * + *": {
+      marginLeft: theme.spacing(10),
+    },
+  },
 }));
 
 function Main(props) {
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [sessionId, setSessionId] = useState("morning");
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "" });
@@ -138,11 +147,15 @@ function Main(props) {
     data.endTime = moment(data.endTime).toISOString();
     resetForm();
     setOpenModal(false);
+    setLoading(true);
     setNotify({
       isOpen: true,
       message: "Submitted Successfully",
       type: "success",
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
 
   const handleChange = (event) => {
@@ -193,22 +206,28 @@ function Main(props) {
         <TblContainer>
           <TblHead />
           <TableBody>
-            {recordsAfterPagingAndSorting().map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.fullName}</TableCell>
-                <TableCell>{item.mobile}</TableCell>
-                <TableCell>{item.city}</TableCell>
-                <TableCell>{item.gender}</TableCell>
-                <TableCell>{item.session}</TableCell>
-                <TableCell>{item.appointmentDate}</TableCell>
-                <TableCell>
-                  {moment(item.startTime).format("dddd, MMMM Do YYYY, h:mm:ss a")}
-                </TableCell>
-                <TableCell>
-                  {moment(item.endTime).format("dddd, MMMM Do YYYY, h:mm:ss a")}
-                </TableCell>
-              </TableRow>
-            ))}
+            {loading === false &&
+              recordsAfterPagingAndSorting().map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.fullName}</TableCell>
+                  <TableCell>{item.mobile}</TableCell>
+                  <TableCell>{item.city}</TableCell>
+                  <TableCell>{item.gender}</TableCell>
+                  <TableCell>{item.session}</TableCell>
+                  <TableCell>{item.appointmentDate}</TableCell>
+                  <TableCell>
+                    {moment(item.startTime).format("dddd, MMMM Do YYYY, h:mm:ss a")}
+                  </TableCell>
+                  <TableCell>
+                    {moment(item.endTime).format("dddd, MMMM Do YYYY, h:mm:ss a")}
+                  </TableCell>
+                </TableRow>
+              ))}
+            {loading === true && (
+              <div className={classes.root}>
+                <CircularProgress />
+              </div>
+            )}
           </TableBody>
         </TblContainer>
         <TblPagination />

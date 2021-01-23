@@ -84,7 +84,7 @@ appointmentSchema.pre("save", async function (next) {
       if (beginningTime >= 8 && beginningTime < 12) {
         next();
       } else {
-        next(new Error("Morning slots are only availble between 8AM to 12PM"));
+        next(new Error("Morning slots are only available between 8AM to 12PM"));
         return;
       }
     }
@@ -92,7 +92,7 @@ appointmentSchema.pre("save", async function (next) {
       if (beginningTime >= 17 && beginningTime < 21) {
         next();
       } else {
-        next(new Error("Evening slots are only availble between 5PM to 9PM"));
+        next(new Error("Evening slots are only available between 5PM to 9PM"));
         return;
       }
     }

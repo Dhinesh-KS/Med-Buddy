@@ -11,6 +11,15 @@ router.get("/getAppointments", async (req, res) => {
   }
 });
 
+router.get("/getAppointmentsByDate", async (req, res) => {
+  try {
+    const listByDate = await Appointment.find({ appointmentDate: req.body.date });
+    res.send(listByDate);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
 router.post("/createAppointment", async (req, res) => {
   const newItem = new Appointment(req.body);
 

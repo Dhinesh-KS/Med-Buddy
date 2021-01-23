@@ -81,7 +81,7 @@ appointmentSchema.pre("save", async function (next) {
     let beginningTime = moment(appointments.startTime).format("HH");
 
     if (appointments.session.toLowerCase() === "morning") {
-      if (beginningTime >= 8 && currentHour < 12) {
+      if (beginningTime >= 8 && beginningTime < 12) {
         next();
       } else {
         next(new Error("Morning slots are only availble between 8AM to 12PM"));
@@ -89,7 +89,7 @@ appointmentSchema.pre("save", async function (next) {
       }
     }
     if (appointments.session.toLowerCase() === "evening") {
-      if (beginningTime >= 17 && currentHour < 21) {
+      if (beginningTime >= 17 && beginningTime < 21) {
         next();
       } else {
         next(new Error("Evening slots are only availble between 5PM to 9PM"));
@@ -108,6 +108,23 @@ appointmentSchema.pre("save", async function (next) {
     let endTime = moment(appointments.endTime);
     if (!beginningTime.isBefore(endTime)) {
       next(new Error("Start time should be before end time"));
+      return;
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+appointmentSchema.pre("save", async function (next) {
+  const appointments = this;
+  try {
+    let beginningTime = moment(appointments.startTime);
+    let endTime = moment(appointments.endTime);
+    let timeDiff = endTime.diff(beginningTime, "minutes");
+    
+    if (timeDiff > 30) {
+      next(new Error("Slot can only be booked for 30mins"));
       return;
     }
     next();

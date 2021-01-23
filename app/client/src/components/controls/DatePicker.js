@@ -3,7 +3,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/picker
 import DateFnsUtils from "@date-io/date-fns";
 
 export default function DatePicker(props) {
-  const { name, label, value, onChange } = props;
+  const { name, label, value, onChange, ...rest } = props;
 
   const convertToDefEventPara = (name, value) => ({
     target: {
@@ -20,11 +20,10 @@ export default function DatePicker(props) {
         inputVariant="outlined"
         label={label}
         format="MM/dd/yyyy"
-        minDate={new Date()}
-        maxDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
         name={name}
         value={value}
         onChange={(date) => onChange(convertToDefEventPara(name, date))}
+        {...rest}
       />
     </MuiPickersUtilsProvider>
   );

@@ -105,6 +105,8 @@ export default function AppointmentForm(props) {
             label="Appointment Date"
             value={values.appointmentDate}
             onChange={handleInputChange}
+            minDate={new Date()}
+            maxDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
           />
           <Controls.RadioGroup
             name="session"

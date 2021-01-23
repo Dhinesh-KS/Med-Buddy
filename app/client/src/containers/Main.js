@@ -22,9 +22,10 @@ import moment from "moment";
 import SnackBar from "../components/SnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { httpClient } from "../services/api/Provider";
+import { records } from "../data/SampleRecords";
 
 const headCells = [
-  { id: "fullName", label: "Patient Name" },
+  { id: "name", label: "Patient Name" },
   { id: "mobile", label: "Mobile Number" },
   { id: "city", label: "City" },
   { id: "gender", label: "Gender", disableSorting: true },
@@ -39,42 +40,6 @@ export const getSession = () => [
   { id: "evening", title: "Evening" },
 ];
 
-const records = [
-  {
-    id: "1",
-    name: "Dhinesh KS",
-    mobile: 7010114990,
-    city: "Thanjavur",
-    gender: "male",
-    session: "morning",
-    appointmentDate: "01/22/2021",
-    startTime: "2021-01-22T09:45:38.138Z",
-    endTime: "2021-01-22T10:14:38.138Z",
-  },
-  {
-    id: "2",
-    name: "Bhuvesh KS",
-    mobile: 7010114990,
-    city: "Thanjavur",
-    gender: "male",
-    session: "evening",
-    appointmentDate: "01/23/2021",
-    startTime: "2021-01-23T09:45:38.138Z",
-    endTime: "2021-01-23T10:14:38.138Z",
-  },
-  {
-    id: "3",
-    name: "Ramesh S",
-    mobile: 7010114990,
-    city: "Thanjavur",
-    gender: "male",
-    session: "evening",
-    appointmentDate: "01/23/2021",
-    startTime: "2021-01-23T09:45:38.138Z",
-    endTime: "2021-01-23T10:14:38.138Z",
-  },
-];
-
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
@@ -82,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   searchInput: {
     width: "25%",
+    paddingRight: theme.spacing(1),
   },
   newButton: {
     position: "absolute",
@@ -104,7 +70,7 @@ function Main(props) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [sessionId, setSessionId] = useState("morning");
+  const [sessionId, setSessionId] = useState("");
   const [notify, setNotify] = useState({ isOpen: false, message: "", type: "" });
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -113,6 +79,7 @@ function Main(props) {
   });
   const [slots, setSlots] = useState([]);
   const [sessionBasedRecords, setSessionBasedRecords] = useState([]);
+  const [adf, setAdf] = useState(new Date());
 
   // useEffect(() => {
   //   setLoading(true);
@@ -131,14 +98,20 @@ function Main(props) {
 
   useEffect(() => {
     filterBySession();
-  }, [sessionId]);
+  }, [sessionId, adf]);
 
   const filterBySession = () => {
     if (sessionId !== "") {
-      let record = records.filter((item) => item.session === sessionId);
+      let record = records.filter(
+        (item) =>
+          item.session === sessionId && item.appointmentDate === moment(adf).format("MM/DD/YYYY")
+      );
       setSessionBasedRecords(record);
     } else {
-      setSessionBasedRecords([...records]);
+      let record = records.filter(
+        (item) => item.appointmentDate === moment(adf).format("MM/DD/YYYY")
+      );
+      setSessionBasedRecords([...record]);
     }
   };
 
@@ -153,7 +126,7 @@ function Main(props) {
     setFilterFn({
       fn: (items) => {
         if (target.value == "") return items;
-        else return items.filter((x) => x.fullName.toLowerCase().includes(target.value));
+        else return items.filter((x) => x.name.toLowerCase().includes(target.value));
       },
     });
   };
@@ -177,6 +150,10 @@ function Main(props) {
 
   const handleChange = (event) => {
     setSessionId(event.target.value);
+  };
+
+  const handleFilterByDate = (event) => {
+    setAdf(event.target.value);
   };
 
   return (
@@ -208,6 +185,12 @@ function Main(props) {
               ),
             }}
             onChange={handleSearch}
+          />
+          <Controls.DatePicker
+            name="appointmentDate"
+            label="Appointment Date"
+            value={adf}
+            onChange={handleFilterByDate}
           />
           <FormControl className={classes.formControl}>
             <Controls.Select

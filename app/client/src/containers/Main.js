@@ -17,6 +17,8 @@ import useTable from "../components/useTable";
 import PageHeader from "../components/PageHeader";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import { Search } from "@material-ui/icons";
+import moment from "moment";
+import SnackBar from "../components/SnackBar";
 
 const headCells = [
   { id: "fullName", label: "Patient Name" },
@@ -42,9 +44,9 @@ const records = [
     city: "Thanjavur",
     gender: "male",
     session: "morning",
-    appointmentDate: "23-01-2021",
-    startTime: "08.34",
-    endTime: "09.00",
+    appointmentDate: "01/22/2021",
+    startTime: "2021-01-22T09:45:38.138Z",
+    endTime: "2021-01-22T10:14:38.138Z",
   },
   {
     id: "2",
@@ -53,20 +55,20 @@ const records = [
     city: "Thanjavur",
     gender: "male",
     session: "evening",
-    appointmentDate: "23-01-2021",
-    startTime: "08.34",
-    endTime: "07.00",
+    appointmentDate: "01/23/2021",
+    startTime: "2021-01-23T09:45:38.138Z",
+    endTime: "2021-01-23T10:14:38.138Z",
   },
   {
-    id: "2",
+    id: "3",
     fullName: "Ramesh S",
     mobile: 7010114990,
     city: "Thanjavur",
     gender: "male",
     session: "evening",
-    appointmentDate: "23-01-2021",
-    startTime: "08.34",
-    endTime: "07.00",
+    appointmentDate: "01/23/2021",
+    startTime: "2021-01-23T09:45:38.138Z",
+    endTime: "2021-01-23T10:14:38.138Z",
   },
 ];
 
@@ -93,6 +95,7 @@ function Main(props) {
   const classes = useStyles();
   const [openModal, setOpenModal] = useState(false);
   const [sessionId, setSessionId] = useState("morning");
+  const [notify, setNotify] = useState({ isOpen: false, message: "", type: "" });
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -129,8 +132,17 @@ function Main(props) {
     });
   };
 
-  const addOrEdit = (employee, resetForm) => {
-    alert("ok");
+  const addOrEdit = (data, resetForm) => {
+    data.appointmentDate = moment(data.appointmentDate).format("MM/DD/YYYY");
+    data.startTime = moment(data.startTime).toISOString();
+    data.endTime = moment(data.endTime).toISOString();
+    resetForm();
+    setOpenModal(false);
+    setNotify({
+      isOpen: true,
+      message: "Submitted Successfully",
+      type: "success",
+    });
   };
 
   const handleChange = (event) => {
@@ -189,8 +201,12 @@ function Main(props) {
                 <TableCell>{item.gender}</TableCell>
                 <TableCell>{item.session}</TableCell>
                 <TableCell>{item.appointmentDate}</TableCell>
-                <TableCell>{item.startTime}</TableCell>
-                <TableCell>{item.endTime}</TableCell>
+                <TableCell>
+                  {moment(item.startTime).format("dddd, MMMM Do YYYY, h:mm:ss a")}
+                </TableCell>
+                <TableCell>
+                  {moment(item.endTime).format("dddd, MMMM Do YYYY, h:mm:ss a")}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -200,6 +216,7 @@ function Main(props) {
       <Modal title="Appointment Form" openModal={openModal} setOpenModal={setOpenModal}>
         <AppointmentForm addOrEdit={addOrEdit} />
       </Modal>
+      <SnackBar notify={notify} setNotify={setNotify} />
     </>
   );
 }

@@ -15,7 +15,6 @@ const sessionItems = [
 ];
 
 const initialFValues = {
-  id: 0,
   fullName: "",
   email: "",
   mobile: "",

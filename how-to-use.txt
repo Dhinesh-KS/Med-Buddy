@@ -9,3 +9,4 @@
     Type-2 Block - responsible for static values.
 
     Based on need comment one block (Type1 / Type2) and uncomment other Type.
+6.) Currently cloud mongo connection url is exposed. It needs to be accessed from env file.

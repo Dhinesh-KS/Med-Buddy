@@ -36,6 +36,20 @@ function SideMenu(props) {
           We serve you the best
         </Typography>
       </div>
+      <Typography
+        variant="subtitle2"
+        component="div"
+        style={{
+          color: "#fff",
+          position: "absolute",
+          bottom: "16px",
+          left: "16px",
+          fontWeight: "lighter",
+          opacity: 0.8
+        }}
+      >
+        @Copyright 2021
+      </Typography>
     </div>
   );
 }

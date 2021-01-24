@@ -2,4 +2,10 @@
 2.) Run 'yarn' on client and server dir.
 3.) Run 'npm run dev' on server.
 4.) Run 'npm start' on client.
-5.) Client Slots list is populated with static values. But API's were integrated for that component.
+5.) Client Slots (Datatable) can be populated both from API service (or) Static Values.
+    Refer client>src>containers>Main.js
+
+    Type-1 Block - responsible for API service.
+    Type-2 Block - responsible for static values.
+
+    Based on need comment one block (Type1 / Type2) and uncomment other Type.

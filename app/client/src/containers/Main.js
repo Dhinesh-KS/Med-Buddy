@@ -81,39 +81,81 @@ function Main(props) {
   const [sessionBasedRecords, setSessionBasedRecords] = useState([]);
   const [adf, setAdf] = useState(new Date());
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   httpClient
-  //     .getSlots()
-  //     .then((res) => {
-  //       setSlots(res.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }, []);
-
+  //-----------------------------------Type-1 Block
+  // Type-1
   useEffect(() => {
-    filterBySession();
+    setLoading(true);
+    httpClient
+      .getSlots()
+      .then((res) => {
+        setSlots(res.data);
+        let record = res.data.filter(
+          (item) => item.appointmentDate === moment(adf).format("MM/DD/YYYY")
+        );
+        setSessionBasedRecords([...record]);
+      })
+      .catch((error) => {
+        console.log(error);
+        setSessionBasedRecords([]);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      });
+  }, []);
+
+  // Type-1
+  const firstUpdate = React.useRef(true);
+
+  // Type-1
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+    } else {
+      filterBySession();
+    }
   }, [sessionId, adf]);
 
+  // Type-1
   const filterBySession = () => {
     if (sessionId !== "") {
-      let record = records.filter(
+      let record = slots.filter(
         (item) =>
           item.session === sessionId && item.appointmentDate === moment(adf).format("MM/DD/YYYY")
       );
       setSessionBasedRecords(record);
     } else {
-      let record = records.filter(
+      let record = slots.filter(
         (item) => item.appointmentDate === moment(adf).format("MM/DD/YYYY")
       );
       setSessionBasedRecords([...record]);
     }
   };
+  //---------------------------------------------------
+
+  //-----------------------------------Type-2 Block
+  // // Type-2
+  // useEffect(() => {
+  //   filterBySession();
+  // }, [sessionId, adf]);
+
+  // // Type-2
+  // const filterBySession = () => {
+  //   if (sessionId !== "") {
+  //     let record = records.filter(
+  //       (item) =>
+  //         item.session === sessionId && item.appointmentDate === moment(adf).format("MM/DD/YYYY")
+  //     );
+  //     setSessionBasedRecords(record);
+  //   } else {
+  //     let record = records.filter(
+  //       (item) => item.appointmentDate === moment(adf).format("MM/DD/YYYY")
+  //     );
+  //     setSessionBasedRecords([...record]);
+  //   }
+  // };
+  //-------------------------------------
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(
     sessionBasedRecords,
@@ -208,7 +250,7 @@ function Main(props) {
           <TableBody>
             {loading === false &&
               recordsAfterPagingAndSorting().map((item) => (
-                <TableRow key={item.id}>
+                <TableRow key={item._id}>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.mobile}</TableCell>
                   <TableCell>{item.city}</TableCell>

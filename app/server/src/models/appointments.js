@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
 const validator = require("validator");
+moment.suppressDeprecationWarnings = true;
 
 const appointmentSchema = mongoose.Schema({
   name: {
@@ -61,6 +62,7 @@ const appointmentSchema = mongoose.Schema({
   },
 });
 
+// Check for unique email
 appointmentSchema.pre("save", async function (next) {
   const appointments = this;
   try {
@@ -75,6 +77,7 @@ appointmentSchema.pre("save", async function (next) {
   }
 });
 
+//Session based time range
 appointmentSchema.pre("save", async function (next) {
   const appointments = this;
   try {
@@ -101,6 +104,7 @@ appointmentSchema.pre("save", async function (next) {
   }
 });
 
+//Check for time validity end time should not be befor start time
 appointmentSchema.pre("save", async function (next) {
   const appointments = this;
   try {
@@ -116,14 +120,15 @@ appointmentSchema.pre("save", async function (next) {
   }
 });
 
+//slot time is set to 30 mins (approx)
 appointmentSchema.pre("save", async function (next) {
   const appointments = this;
   try {
     let beginningTime = moment(appointments.startTime);
     let endTime = moment(appointments.endTime);
     let timeDiff = endTime.diff(beginningTime, "minutes");
-    
-    if (timeDiff > 30) {
+
+    if (timeDiff >= 30 || timeDiff <= 25) {
       next(new Error("Slot can only be booked for 30mins"));
       return;
     }
@@ -133,6 +138,7 @@ appointmentSchema.pre("save", async function (next) {
   }
 });
 
+//Time overlap check
 appointmentSchema.pre("save", async function (next) {
   const appointments = this;
   try {
